@@ -8,8 +8,7 @@ FROM python:3.5.2-alpine
         bash-completion
 
  ENV PYTHONUNBUFFERED 1
- RUN mkdir /code
- WORKDIR /code
- ADD requirements.txt /code/
+ RUN mkdir -p /usr/src/app
+ WORKDIR /usr/src/app
+ ADD requirements/requirements.txt /usr/src/app
  RUN pip install -r requirements.txt
- ADD . /code/

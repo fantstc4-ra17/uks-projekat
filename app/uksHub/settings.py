@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'uksHub.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-env.read_envfile()
+env.read_envfile('postgres.env')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

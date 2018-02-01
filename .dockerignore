@@ -1,0 +1,11 @@
+# git
+.git
+.cache
+.gitignore
+
+# Postgres
+database
+
+# VisualStudioCode
+.vscode/*
+.history

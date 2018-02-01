@@ -6,7 +6,7 @@ services:
     build: .
     command: "python3 manage.py runserver 0.0.0.0:8011"
     volumes:
-      - ./code:/code
+      - ./app:/usr/src/app
       - ./scripts:/scripts
     ports:
       - "8011:8011"
@@ -15,7 +15,7 @@ services:
   
   postgres:
     env_file:
-     - .env
+     - app/postgres.env
     volumes:
      - ./database:/var/lib/postgresql/data
 
