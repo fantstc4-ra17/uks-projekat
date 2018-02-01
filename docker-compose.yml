@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+
+  web:
+    build: .
+    command: "python3 manage.py runserver 0.0.0.0:8011"
+    volumes:
+      - ./code:/code
+      - ./scripts:/scripts
+    ports:
+      - "8011:8011"
+    depends_on:
+      - postgres
+  
+  postgres:
+    env_file:
+     - .env
+    volumes:
+     - ./database:/var/lib/postgresql/data
+
+    image: postgres:alpine

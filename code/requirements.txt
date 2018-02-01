@@ -1,0 +1,5 @@
+Django
+Jinja2
+psycopg2
+pytz
+envparse
