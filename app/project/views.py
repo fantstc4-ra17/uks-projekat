@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404 
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse
 from .models import Project
 
@@ -6,11 +6,19 @@ from .models import Project
 def default(request):
     return HttpResponse('default response')
 
-def details(request, username, project_name):
+def index(request):
+    project_list = Project.objects.all()
+    context = { 
+        'project_list': project_list, 
+        }
+    return render(request, 'project/index.html', context)
+
+def details(request, project_name):
     # when db is populated:
-    # project = get_object_or_404(Project, name=project_name)
-    project = ''
-    context={'username': username}
+    project = get_object_or_404(Project, name=project_name)
+    context = { 
+        'project': project_name 
+        }
     return render(request, 'project/details.html', context)
 
 def start(request, username):
