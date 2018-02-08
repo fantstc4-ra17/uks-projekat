@@ -1,28 +1,41 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
-from django.http import HttpResponse
-from .models import Project
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from .models import Project, Version, Milestone
+from .forms import ProjectForm, VersionForm, MilestoneForm
 
 # Create your views here.
-def default(request):
-    return HttpResponse('default response')
 
-def index(request):
-    project_list = Project.objects.all()
-    context = { 
-        'project_list': project_list, 
-        }
-    return render(request, 'project/index.html', context)
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = Project
+    form_class = ProjectForm
+    template_name_suffix = '_create_form'
+    context_object_name = 'project'
 
-def details(request, project_name):
-    # when db is populated:
-    project = get_object_or_404(Project, name=project_name)
-    context = { 
-        'project': project_name 
-        }
-    return render(request, 'project/details.html', context)
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-def start(request, username):
-    return HttpResponse("Start project for user: %s" % username)
+class ProjectUpdateView(LoginRequiredMixin, UpdateView):
+    model = Project
+    form_class = ProjectForm
+    template_name_suffix = '_update_form'
+    context_object_name = 'project'
 
-def invite(request, username, project_name):
-    return HttpResponse("Project %s of user %s invite page." % (project_name, username))
+class ProjectDeleteView(LoginRequiredMixin, DeleteView):
+    model = Project
+    success_url = reverse_lazy('project:project_list')
+    context_object_name = 'project'
+
+class ProjectListView(ListView):
+    model = Project
+    context_object_name = 'project_list'
+    queryset = Project.objects.all()
+
+class ProjectDetailView(DetailView):
+    model = Project
+    context_object_name = 'project'
+    

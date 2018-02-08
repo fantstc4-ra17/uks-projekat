@@ -3,6 +3,7 @@ from .models import Project
 
 # Register your models here.
 class ProjectAdmin(admin.ModelAdmin):
+    list_display=['name', 'pk', 'owner', 'description', 'date_created', ]
     def get_changeform_initial_data(self, request):
         get_data = super(ProjectAdmin, self).get_changeform_initial_data(request)
         get_data['owner'] = request.user.pk
