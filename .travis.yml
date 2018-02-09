@@ -12,7 +12,7 @@ services:
 
 before_install:
   - docker --version
-  - docker-compose -p $DOCKER_USERNAME/ukshub:latest build
+  - docker-compose -p $DOCKER_USERNAME/ukshub:latest build .
   - docker images
 
 install:
