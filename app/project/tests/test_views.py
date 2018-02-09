@@ -1,5 +1,6 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from project.views import ProjectCreateView, ProjectDeleteView, ProjectUpdateView
 from project.models import Project, default_user
 
@@ -8,9 +9,18 @@ class ProjectViewTest(TestCase):
 
     @classmethod
     def setUpTestData(self):
-        User.objects.create_user('test_user', 'test@test.project', 'some password')
-        Project.objects.create_project(name='test project 1')
-        Project.objects.create_project(name='test project 2')
+        owner = User.objects.create_user('test_user', 'test@test.project', 'some password')
+        project_1 = Project.objects.create_project(name='test project 1')
+        project_2 = Project.objects.create_project(name='test project 2')
+        project_1.owner = owner
+        project_2.owner = owner
+        project_1.save()
+        project_2.save()
+        assign_perm("delete_project", owner, project_1)
+        assign_perm("delete_project", owner, project_2)
+        assign_perm("change_project", owner, project_1)
+        assign_perm("change_project", owner, project_2)
+        
     
     def test_project_create(self):
         self.client.login(username='test_user', password='some password')
