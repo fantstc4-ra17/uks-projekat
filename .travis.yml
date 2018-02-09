@@ -9,18 +9,18 @@ addons:
     - sshpass
 services:
   - docker
-
-install:
-  - pip install -r requirements.txt
-
-script:
-  - python tests.py
+  - docker-compose
 
 before_install:
   - docker --version
   - docker build -t $DOCKER_USERNAME/uksHub:latest .
   - docker images
-  - openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv -in deploy_key.enc -out ./deploy_key -d
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - docker exec web "python manage.py test project/tests"
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
