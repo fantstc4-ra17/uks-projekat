@@ -1,4 +1,4 @@
-version: '2.2'
+version: '2.1'
 
 services:
 
@@ -11,13 +11,17 @@ services:
     ports:
       - "8011:8011"
     depends_on:
-      - postgres:
-          condition: service_healthy
+      postgres:
+        condition: service_healthy
   
   postgres:
     env_file:
      - app/postgres.env
     volumes:
      - ./database:/var/lib/postgresql/data
-
+    healthcheck:
+      test: ["CMD", "ping", "-c","1", "localhost:8021"]
+      interval: 1s
+      timeout: 5s
+      retries: 3
     image: postgres:alpine
