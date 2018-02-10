@@ -20,7 +20,7 @@ install:
 
 script:
   - docker-compose up -d
-  - docker exec uksprojekat_web_1 python manage.py test project/tests
+  - docker exec uksprojekat_web_1 python3 manage.py test
 
 after_success:
   - docker build -t $DOCKER_USERNAME/ukshub:latest .
