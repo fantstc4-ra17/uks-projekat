@@ -1,4 +1,6 @@
 Django
+django-guardian
+django-registration-redux
 Jinja2
 psycopg2
 pytz
