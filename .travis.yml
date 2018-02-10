@@ -13,7 +13,7 @@ services:
 before_install:
   - docker --version
   - openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv -in postgres.env.enc -out app/postgres.env -d
-  - docker-compose -p $DOCKER_USERNAME/ukshub:latest build .
+  - docker-compose -p $DOCKER_USERNAME/ukshub:latest build
   - docker images
 
 install:
