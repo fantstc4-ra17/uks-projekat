@@ -20,6 +20,7 @@ install:
   - pip install -r requirements/requirements.txt
 
 script:
+  - docker-compose up
   - docker exec web "python manage.py test project/tests"
 
 after_success:
