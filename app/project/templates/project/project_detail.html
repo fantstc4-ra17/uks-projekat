@@ -1,9 +1,60 @@
 {% extends "base_generic.html" %}
 {% block content %}
-    <div>
-        <b>Project:</b> {{ project }}
-    </div>
-    <div>
-        <b>Description:</b> {{ project.description }}
+    <div class="d-table mx-auto justify-content-center">
+        <h1 class="p-2">Project details:</h2>
+        <div class="d-flex flex-row">
+            <div class="d-flex flex-column">
+                <div class="">
+                    <b>Name:</b> {{ project.name }}
+                </div>
+                <div class="">
+                    <b>Description:</b> {{ project.description }}
+                </div>
+            </div>
+            <div class="d-flex flex-column px-4">
+                <div class="btn-group btn-group" role="group">
+                    <a href="{% url 'project:project_update' project.id %}" class="btn btn-warning" role="button">
+                        Update
+                    </a>
+                    <a href="{% url 'project:project_delete' project.id %}" class="btn btn-danger" role="button">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex p-1">
+            <div class = "p-3">
+                <a href="{% url 'project:milestone_add' project.id %}" class="btn btn-primary" role="button">
+                    Add milestone
+                </a>
+            </div>
+            <div class="p-3">
+                <a href="{% url 'project:version_add' project.id %}" class="btn btn-primary" role="button">
+                    Add version
+                </a>
+            </div>
+        </div>
+        <hr/>
+        <div class="d-flex">
+            <div class="px-4">
+                <h3 class="p-2">Milestones:</h2>
+                <div>
+                    {% for milestone in project.milestones.all %}
+                    <hr>
+                    {% include "project/bases/milestone_detail_base.html" %}
+                    </hr>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="px-4">
+                <h3 class="p-2">Versions: </h3>
+                {% for version in project.versions.all %}
+                    <hr>
+                    {% include "project/bases/version_detail_base.html" %}
+                    </hr>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 {% endblock content %}
