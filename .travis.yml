@@ -21,7 +21,7 @@ install:
 
 script:
   - docker-compose up -d
-  - docker exec uksprojekat_web_1 python3 manage.py test
+  - docker exec uksprojekat_web_1 python3 manage.py test -v2
 
 after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";

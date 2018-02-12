@@ -1,6 +1,7 @@
 Django
 django-guardian
 django-registration-redux
+django-crispy-forms
 Jinja2
 psycopg2
 pytz
