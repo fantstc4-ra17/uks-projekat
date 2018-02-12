@@ -1,0 +1,19 @@
+<div class="">
+    <b>Name:</b> <a href="{% url 'project:milestone_detail' milestone.id %}"> 
+        {{ milestone.name }}
+    </a>
+</div>
+<div class="">
+    <b>Description:</b> {{ milestone.description }}
+</div>
+<div>
+    <b>Date due:</b> {{ milestone.due_date }}
+</div>
+<div class="btn-group btn-group-sm" role="group">
+    <a href="{% url 'project:milestone_update' milestone.id %}" class="btn btn-warning" role="button">
+        Update
+    </a>
+    <a href="{% url 'project:milestone_delete' milestone.id %}" class="btn btn-danger" role="button">
+        Delete
+    </a>
+</div>

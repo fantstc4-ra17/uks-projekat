@@ -21,7 +21,7 @@ services:
      - ./database:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "ping", "-c","1", "localhost:8021"]
-      interval: 1s
+      interval: 3s
       timeout: 5s
       retries: 3
     image: postgres:alpine

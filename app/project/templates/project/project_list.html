@@ -1,14 +1,14 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Projects</h1>
-    <ul>
+    <h1 class="text-center p-2">My projects:</h1>
+    <div class="d-table mx-auto justify-content-center">
         {% for project in project_list %}
-            <li> 
-                <a href="{{ project.get_absolute_url }}"> {{ project.name }} </a> ({{ project.owner }})
-            </li>
+            <hr> 
+                <a href="{{ project.get_absolute_url }}"> {{ project }} </a>
+            </hr>
         {% empty %}
-            <li>No projects yet.</li>
+            <hr>No projects yet.</hr>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
