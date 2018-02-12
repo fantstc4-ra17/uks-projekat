@@ -1,0 +1,13 @@
+<div>
+    <b>Name:</b> <a href="{% url 'project:version_detail' version.id %}"> 
+        {{ version.name }}
+    </a>
+</div>
+<div class="btn-group btn-group-sm" role="group">
+    <a href="{% url 'project:version_update' version.id %}" class="btn btn-warning" role="button">
+        Update
+    </a>
+    <a href="{% url 'project:version_delete' version.id %}" class="btn btn-danger" role="button">
+        Delete
+    </a>
+</div>

@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="d-flex offset-3 p-2">
+    <a href="{{ version.project.get_absolute_url }}">
+        <i>back to project</i>
+    </a>
+</div>
+<div class="d-table mx-auto justify-content-center">
+    <h3>Version details:</h3>
+    {% include "project/bases/version_detail_base.html" %}
+</div>
+{% endblock content %}
