@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="d-table mx-auto justify-content-center">
+    <h1 class="p-2">Home</h1>
+        {% if user.is_authenticated %}
+            <h2>My recent projects:</h2>
+            <a href="{% url 'project:project_start' %}" class="btn btn-success m-2">Start a new project</a>
+            <div>
+                {% for project in object_list %}
+                    <hr>
+                        <a href="{{ project.get_absolute_url }}" class="mx-2">{{ project.name }}</a>
+                    </hr>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Welcome to <em>UKS Hub</em>. Please <a href="{% url 'login' %}">sign in</a> to continue.</p>
+        {% endif %}
+    <br>
+    <h2 class="p-2">Dynamic content</h2>
+
+        <p>The hub has the following record counts:</p>
+        <ul>
+            <li><strong>Projects:</strong> {{ num_projects }}</li>
+            <li><strong>Users:</strong> {{ num_users }}</li>
+        </ul>
+</div>
+
+
+{% endblock %}

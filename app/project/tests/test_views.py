@@ -77,13 +77,12 @@ class ProjectViewTest(TestCase):
         test_milestone = Milestone.objects.get(pk=1)
         self.assertEquals(test_milestone.name, new_name)
 
-        self.client.login(username='test_user', password='some password')
         test_url = '/project/milestone/delete/1'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url)
         with self.assertRaises(Milestone.DoesNotExist):
-            Milestone.objects.get(pk=2)
+            Milestone.objects.get(pk=1)
 
     def test_version_create_update_delete(self):
         self.client.login(username='test_user', password='some password')
@@ -103,10 +102,9 @@ class ProjectViewTest(TestCase):
         test_version = Version.objects.get(pk=1)
         self.assertEquals(test_version.name, new_name)
 
-        self.client.login(username='test_user', password='some password')
         test_url = '/project/version/delete/1'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url)
         with self.assertRaises(Version.DoesNotExist):
-            Version.objects.get(pk=2)
+            Version.objects.get(pk=1)

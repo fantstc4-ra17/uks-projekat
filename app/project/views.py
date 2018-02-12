@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, AnonymousUser
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -9,7 +10,22 @@ from guardian.shortcuts import assign_perm
 from .models import Project, Version, Milestone
 from .forms import ProjectForm, VersionForm, MilestoneForm
 
-# Create your views here.
+class HomePageView(ListView):
+
+    model = Project
+    template_name = 'index.html'
+    context_object_name = 'users_projects'
+
+    def get_queryset(self):
+        if isinstance(self.request.user, User):
+            return Project.objects.filter(owner = self.request.user).order_by('-date_created')[:10]
+
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
+        context['num_projects'] = Project.objects.all().count()
+        context['num_users'] = User.objects.all().count()
+        return context
+        
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
