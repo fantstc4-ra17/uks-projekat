@@ -10,11 +10,12 @@ class ProjectForm(forms.ModelForm):
         super(ProjectForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'id-projectForm'
-        self.helper.form_class = 'form-group offset-4'
-        self.helper.label_class = 'col-lg-4 font-weight-bold'
-        self.helper.field_class = 'col-lg-6'
+        self.helper.form_class = 'd-table mx-auto justify-content-center'
+        self.helper.label_class = 'font-weight-bold'
+        self.helper.field_class = 'form-control-sm'
+        self.helper.form_group_wrapper_class = 'w-100'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'start'
+        self.helper.form_action = ''
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
@@ -28,17 +29,21 @@ class MilestoneForm(forms.ModelForm):
         super(MilestoneForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'id-milestoneForm'
-        self.helper.form_class = 'form-group offset-4'
-        self.helper.label_class = 'col-lg-4 font-weight-bold'
-        self.helper.field_class = 'col-lg-6'
+        self.helper.form_class = 'd-table mx-auto justify-content-center'
+        self.helper.label_class = 'font-weight-bold'
+        self.helper.field_class = 'form-control-sm'
+        self.helper.form_group_wrapper_class = 'w-100'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'add_milestone'
+        self.helper.form_action = ''
 
         self.helper.add_input(Submit('submit', 'Submit'))
 
     class Meta:
         model = Milestone
-        fields = ['name', 'description', 'due_date',]
+        fields = ['name', 'description', 'due_date']
+        widgets = {
+            'due_date': forms.TextInput( attrs = {'type': 'date'} )
+        }
 
 class VersionForm(forms.ModelForm):
 
@@ -46,13 +51,15 @@ class VersionForm(forms.ModelForm):
         super(VersionForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_id = 'id-versionForm'
-        self.helper.form_class = 'form-group offset-4'
-        self.helper.label_class = 'col-lg-4 font-weight-bold'
-        self.helper.field_class = 'col-lg-6'
+        self.helper.form_class = 'd-table mx-auto justify-content-center'
+        self.helper.label_class = 'font-weight-bold'
+        self.helper.field_class = 'form-control-sm'
+        self.helper.form_group_wrapper_class = 'w-100'
         self.helper.form_method = 'post'
-        self.helper.form_action = 'add_version'
+        self.helper.form_action = ''
 
         self.helper.add_input(Submit('submit', 'Submit'))
+
     class Meta:
         model = Version
         fields = ['name',]
