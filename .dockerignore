@@ -9,3 +9,6 @@ database
 # VisualStudioCode
 .vscode/*
 .history
+
+# misc
+deploy
