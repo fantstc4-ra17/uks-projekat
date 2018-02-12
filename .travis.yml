@@ -27,4 +27,7 @@ after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
   - docker push $DOCKER_USERNAME/ukshub:latest
 
-if: type = pull_request
+branches:
+  - master
+  - develop
+  - /^pr\..*/
