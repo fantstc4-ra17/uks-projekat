@@ -2,12 +2,20 @@ sudo: required
 language: python
 python:
 - 3.5.2
+
 addons:
   apt:
     packages:
     - sshpass
 services:
 - docker
+
+branches:
+  - master
+  - develop
+  - "/^pr\\..*/"
+  - "/^release\\..*/"
+
 before_install:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
 - openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv
@@ -15,16 +23,24 @@ before_install:
 - docker --version
 - openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv
   -in postgres.env.enc -out app/postgres.env -d
+
 install:
-- docker-compose -p "$DOCKER_USERNAME"/ukshub:latest build --build-arg DEPLOY=1 web
 - docker images
+
 script:
 - docker-compose up -d
 - docker exec uksprojekat_web_1 python3 manage.py test -v2
+
 after_success:
+- docker-compose -p "$DOCKER_USERNAME"/ukshub:latest build --build-arg DEPLOY=1 web
 - docker push $DOCKER_USERNAME/ukshub:latest
-branches:
-- master
-- develop
-- "/^pr\\..*/"
-- "/^release\\..*/"
+- export SSHPASS=$DEPLOY_PASS
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: chmod 600 deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy_key
+    $HOST@$HOST_IP './deploy.sh'
+  on:
+    branch: master
+    condition: "TRAVI_PULL_REQUEST != false"
