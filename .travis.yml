@@ -27,13 +27,13 @@ install:
 - docker images
 
 script:
+- sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py #turn off debug option for django
+- docker-compose build --build-arg DEPLOY=1 web
 - docker-compose up -d
 - docker exec uksprojekat_web_1 python3 manage.py test -v2
-- sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py #turn off debug option for django
 
 after_success:
-- docker-compose -p "$DOCKER_USERNAME"/ukshub:latest build --build-arg DEPLOY=1 web
-- docker tag 
+- docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
 - docker push $DOCKER_USERNAME/ukshub:production
 - export SSHPASS=$DEPLOY_PASS
 
