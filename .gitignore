@@ -13,6 +13,11 @@ database
 ### Docker ###
 *.env
 
+### Deployment ###
+deploy
+deploy_key
+*.tar
+
 ### VisualStudioCode ###
 .vscode/*
 .history
