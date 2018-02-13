@@ -10,5 +10,7 @@ database
 .vscode/*
 .history
 
-# misc
+# deployment
 deploy
+deploy_key
+secrets.tar
