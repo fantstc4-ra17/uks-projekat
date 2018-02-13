@@ -40,7 +40,7 @@ after_success:
 deploy:
   provider: script
   skip_cleanup: true
-  script: chmod 600 deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key
+  script: chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key
     $HOST@$HOST_IP './deploy.sh'
   on:
     branch: master
