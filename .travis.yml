@@ -43,4 +43,4 @@ deploy:
     $HOST@$HOST_IP './deploy.sh'
   on:
     branch: master
-    condition: TRAVI_PULL_REQUEST != false
+    condition: TRAVI_PULL_REQUEST = true
