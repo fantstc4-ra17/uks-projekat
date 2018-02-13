@@ -44,4 +44,3 @@ deploy:
     $HOST@$HOST_IP './deploy.sh'
   on:
     branch: master
-    condition: TRAVIS_PULL_REQUEST = true
