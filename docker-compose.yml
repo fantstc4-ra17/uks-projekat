@@ -20,7 +20,7 @@ services:
     volumes:
      - ./database:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "ping", "-c","1", "localhost:8021"]
+      test: ["CMD", "ping", "-c","1", "localhost:8012"]
       interval: 3s
       timeout: 5s
       retries: 3
