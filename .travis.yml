@@ -35,11 +35,10 @@ script:
 after_success:
 - docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
 - docker push $DOCKER_USERNAME/ukshub:production
-- echo $TRAVIS_TAG
-- if [ -n "$TRAVIS_TAG" ]; then
-    docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG"; 
-    docker push "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG;" 
-  fi
+- echo $TAG
+  if: tag ~= "/v(\d)+(\.\d+)*/"
+    -docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG"; 
+    -docker push "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG;" 
 - export SSHPASS=$DEPLOY_PASS
 
 deploy:
