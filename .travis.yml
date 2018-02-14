@@ -15,6 +15,7 @@ branches:
 - develop
 - "/^pr\\..*/"
 - "/^release\\..*/"
+- "/^hotfix\\..*/"
 
 before_install:
 - openssl aes-256-cbc -K $encrypted_83630750896a_key -iv $encrypted_83630750896a_iv
@@ -27,20 +28,22 @@ install:
 - docker images
 
 script:
+- sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py #turn off debug option for django
 - docker-compose up -d
 - docker-compose run web python3 manage.py test -v2
 
 after_success:
 - docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
 - docker push $DOCKER_USERNAME/ukshub:production
-- if [ -n "$TRAVIS_TAG" ]; then
-  -docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:$TRAVIS_TAG;
-  -docker push $DOCKER_USERNAME/ukshub:$TRAVIS_TAG; fi
 - export SSHPASS=$DEPLOY_PASS
 
 deploy:
   provider: script
   skip_cleanup: true
-  script: chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
+  script:
+    -docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG"; 
+    -docker push "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG;" 
+    -chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
   on:
     branch: master
+    tags: true
