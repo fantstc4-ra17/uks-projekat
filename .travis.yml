@@ -28,7 +28,7 @@ install:
 - docker images
 
 script:
-- sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py #turn off debug option for django
+- sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py # turn off debug option for django
 - docker-compose up -d
 - docker-compose run web python3 manage.py test -v2
 
