@@ -4,10 +4,8 @@ services:
 
   web:
     build: .
-    command: "python3 manage.py runserver 0.0.0.0:8011"
     volumes:
       - ./app:/usr/src/app
-      - ./scripts:/scripts
     ports:
       - "8011:8011"
     depends_on:
