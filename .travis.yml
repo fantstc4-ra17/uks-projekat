@@ -35,15 +35,15 @@ script:
 after_success:
 - docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
 - docker push $DOCKER_USERNAME/ukshub:production
-- echo $TAG
-  if: tag ~= "/v(\d)+(\.\d+)*/"
-    -docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG"; 
-    -docker push "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG;" 
 - export SSHPASS=$DEPLOY_PASS
 
 deploy:
   provider: script
   skip_cleanup: true
+  script:
+    -docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG"; 
+    -docker push "$DOCKER_USERNAME"/ukshub:"$TRAVIS_TAG;" 
   script: chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
   on:
     branch: master
+    tags: true
