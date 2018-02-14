@@ -31,8 +31,6 @@ script:
 - sed -i 's/DEBUG\ =\ True/DEBUG\ =\ False/g' app/uksHub/settings.py #turn off debug option for django
 - docker-compose up -d
 - docker-compose run web python3 manage.py test -v2
-- docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
-- docker push $DOCKER_USERNAME/ukshub:production
 
 after_success:
 - export SSHPASS=$DEPLOY_PASS
@@ -40,6 +38,8 @@ after_success:
 deploy:
   provider: script
   skip_cleanup: true
-  script: chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
+  script: docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production && 
+          docker push $DOCKER_USERNAME/ukshub:production && 
+          chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
   on:
     branch: master
