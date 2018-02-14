@@ -38,9 +38,9 @@ after_success:
 deploy:
   provider: script
   skip_cleanup: true
-  script:
-    - docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production
-    - docker push $DOCKER_USERNAME/ukshub:production
-    - chmod 600 deploy/deploy_key && sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
+  script: docker tag uksprojekat_web "$DOCKER_USERNAME"/ukshub:production && 
+          docker push $DOCKER_USERNAME/ukshub:production && 
+          chmod 600 deploy/deploy_key && 
+          sshpass -e ssh -o StrictHostKeyChecking=no -i ./deploy/deploy_key $HOST@$HOST_IP './fantstc4/ukshub/deploy.sh'
   on:
     branch: master
