@@ -4,10 +4,8 @@ services:
 
   web:
     build: .
-    command: "python3 manage.py runserver 0.0.0.0:8011"
     volumes:
       - ./app:/usr/src/app
-      - ./scripts:/scripts
     ports:
       - "8011:8011"
     depends_on:
@@ -20,7 +18,7 @@ services:
     volumes:
      - ./database:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "ping", "-c","1", "localhost:8021"]
+      test: ["CMD", "ping", "-c","1", "localhost:8012"]
       interval: 3s
       timeout: 5s
       retries: 3
