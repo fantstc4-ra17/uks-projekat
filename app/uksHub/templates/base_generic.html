@@ -24,11 +24,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- center -->
                 <ul class="navbar-nav justify-content-sm-center mx-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Projects</a>
+                        <a class="nav-link" href="{% url 'project:project_list' %}">Projects</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#">Issues</a>
@@ -40,14 +40,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">User: {{ user.username }}</a>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>
                     {% else %}
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'registration_register' %}">Register</a>
                         </li>
                     {% endif %}
