@@ -13,7 +13,8 @@ def default_user():
 
 class Project(models.Model):
 
-    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, default=default_user, related_name="projects", blank=False)
+    owner = models.ForeignKey(to=User, on_delete=models.CASCADE, default=default_user, related_name="owned_projects", blank=False)
+    members = models.ManyToManyField(to=User, related_name='member_of_projects')
     name = models.CharField(max_length=100)
     description = models.TextField()
     date_created = models.DateField('Date created',auto_now_add=True)
