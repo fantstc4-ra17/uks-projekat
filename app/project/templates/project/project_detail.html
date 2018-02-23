@@ -30,7 +30,7 @@
             <div class="row bg-light p-2">
                 {% for member in project.members.all %}
                 <div class="col-6">
-                    {{ member.username }}
+                    <a href="{% url 'project:project_list' %}?username={{ member.username | urlencode }}">{{ member.username }}</a>
                     <a href="{% url 'project:project_member_remove' project.id member.id %}" class="fa fa-times fa-lg" style="color:#d9534f; border-color: #d43f3a" role="button">
                     </a>
                 </div>    

@@ -54,15 +54,21 @@ class ProjectDeleteView(PermissionRequiredMixin, DeleteView):
     context_object_name = 'project'
     permission_required = 'delete_project'
 
-class ProjectListView(ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
     context_object_name = 'project_list'
-    queryset = Project.objects.all()
+    
+    #TODO: change so only projects user is owner and member are shown
+    def get_queryset(self):
+        user_query = self.request.GET.get('username') or self.request.user.username
+        queried_user = User.objects.get(username=user_query)
+        members = Project.objects.filter(members=queried_user).distinct()
+        owners = Project.objects.filter(owner=queried_user).distinct()
+        return owners.union(members)
 
 class ProjectDetailView(DetailView):
     model = Project
     context_object_name = 'project'
-
 
 class ProjectMemberAddView(FormView, SingleObjectMixin, PermissionRequiredMixin):
     form_class = AddMemberForm
@@ -97,15 +103,20 @@ class ProjectMemberDeleteView(DeleteView, PermissionRequiredMixin):
 
     def delete(self, request, *args, **kwargs):
         project = self.get_object()
-        project.members.remove(self.get_user_object(pk=self.kwargs['upk']))
+        project.members.remove(self.get_user_object())
         return redirect(self.get_success_url())
 
     def get_success_url(self):
         project_id = self.kwargs['pk']
         return reverse_lazy('project:project_detail', args=[project_id])
     
-    def get_user_object(self, pk):
-        return User.objects.get(pk=pk)
+    def get_user_object(self):
+        return User.objects.get(pk=self.kwargs['upk'])
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProjectMemberDeleteView, self).get_context_data(**kwargs)
+        context['deleting_user'] = self.get_user_object()
+        return context
 
 class MilestoneCreateView(LoginRequiredMixin, CreateView):
     model = Milestone
