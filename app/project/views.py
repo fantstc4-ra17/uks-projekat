@@ -1,14 +1,15 @@
+from django import forms
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, AnonymousUser
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView, ModelFormMixin
+from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from guardian.mixins import PermissionRequiredMixin
 from guardian.shortcuts import assign_perm
 from .models import Project, Version, Milestone
-from .forms import ProjectForm, VersionForm, MilestoneForm
+from .forms import ProjectForm, AddMemberForm, VersionForm, MilestoneForm
 
 class HomePageView(ListView):
 
@@ -53,14 +54,69 @@ class ProjectDeleteView(PermissionRequiredMixin, DeleteView):
     context_object_name = 'project'
     permission_required = 'delete_project'
 
-class ProjectListView(ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
     context_object_name = 'project_list'
-    queryset = Project.objects.all()
+    
+    #TODO: change so only projects user is owner and member are shown
+    def get_queryset(self):
+        user_query = self.request.GET.get('username') or self.request.user.username
+        queried_user = User.objects.get(username=user_query)
+        members = Project.objects.filter(members=queried_user).distinct()
+        owners = Project.objects.filter(owner=queried_user).distinct()
+        return owners.union(members)
 
 class ProjectDetailView(DetailView):
     model = Project
     context_object_name = 'project'
+
+class ProjectMemberAddView(FormView, SingleObjectMixin, PermissionRequiredMixin):
+    form_class = AddMemberForm
+    model = Project
+    template_name = 'project/project_member_add_form.html'
+    context_object_name = 'project'
+    permission_required = 'change_project'
+
+    def form_valid(self, form):
+        member_username = form.cleaned_data['username']
+        member = User.objects.get(username=member_username)
+        self.object.members.add(member)
+        self.object.save()
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        project_id = self.kwargs['pk']
+        return reverse_lazy('project:project_detail', args=[project_id])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+
+class ProjectMemberDeleteView(DeleteView, PermissionRequiredMixin):
+    model = Project
+    template_name = 'project/project_member_confirm_remove.html'
+
+    def delete(self, request, *args, **kwargs):
+        project = self.get_object()
+        project.members.remove(self.get_user_object())
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        project_id = self.kwargs['pk']
+        return reverse_lazy('project:project_detail', args=[project_id])
+    
+    def get_user_object(self):
+        return User.objects.get(pk=self.kwargs['upk'])
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProjectMemberDeleteView, self).get_context_data(**kwargs)
+        context['deleting_user'] = self.get_user_object()
+        return context
 
 class MilestoneCreateView(LoginRequiredMixin, CreateView):
     model = Milestone
@@ -71,7 +127,6 @@ class MilestoneCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         project_id = self.kwargs['pk']
         form.instance.project = Project.objects.get(id=project_id)
-        print(form.instance.project)
         return_value = super().form_valid(form)
         assign_perm("delete_milestone", self.request.user, form.instance)
         assign_perm("change_milestone", self.request.user, form.instance)
@@ -90,7 +145,7 @@ class MilestoneDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'delete_milestone'
 
     def get_success_url(self):
-        return reverse_lazy('project:project_detail', kwargs={'pk':self.get_object().project.id})
+        return reverse_lazy('project:project_detail', kwargs={'pk': self.get_object().project.id})
 
 class MilestoneListView(ListView):
     model = Milestone
@@ -110,7 +165,6 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         project_id = self.kwargs['pk']
         form.instance.project = Project.objects.get(id=project_id)
-        print(form.instance.project)
         return_value = super().form_valid(form)
         assign_perm("delete_version", self.request.user, form.instance)
         assign_perm("change_version", self.request.user, form.instance)
@@ -129,7 +183,7 @@ class VersionDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'delete_version'
 
     def get_success_url(self):
-        return reverse_lazy('project:project_detail', kwargs={'pk':self.get_object().project.id})
+        return reverse_lazy('project:project_detail', kwargs={'pk': self.get_object().project.id})
 
 class VersionListView(ListView):
     model = Version

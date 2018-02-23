@@ -1,11 +1,11 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from unittest import skip
 from django.contrib.auth.models import User
 from guardian.shortcuts import assign_perm
 from project.views import ProjectCreateView, ProjectDeleteView, ProjectUpdateView
 from project.models import Project, Milestone, Version, default_user
 
-
+@override_settings(DEBUG=True)
 class ProjectViewTest(TestCase):
 
     @classmethod
@@ -34,15 +34,15 @@ class ProjectViewTest(TestCase):
         self.assertEquals(test_project.owner.username, 'test_user')
 
     def test_project_detail(self):
-        test_url = '/project/detail/'
-        response = self.client.get(test_url+'1')
+        test_url = '/project/'
+        response = self.client.get(test_url+'1/detail')
         self.assertEquals(response.status_code, 200)
-        response = self.client.get(test_url+'2')
+        response = self.client.get(test_url+'2/detail')
         self.assertEquals(response.status_code, 200)
     
     def test_project_update(self):
         self.client.login(username='test_user', password='some password')
-        test_url = '/project/update/1'
+        test_url = '/project/1/update'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         new_name = 'test1 updated'
@@ -52,7 +52,7 @@ class ProjectViewTest(TestCase):
 
     def test_project_delete(self):
         self.client.login(username='test_user', password='some password')
-        test_url = '/project/delete/2'
+        test_url = '/project/2/delete'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url)
@@ -61,7 +61,7 @@ class ProjectViewTest(TestCase):
 
     def test_milestone_create_update_delete(self):
         self.client.login(username='test_user', password='some password')
-        test_url = '/project/detail/1/add_milestone'
+        test_url = '/project/1/add_milestone'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url, {'name': 'milestone_test', 'description': 'test description', 'due_date': '10/10/2018'})
@@ -69,7 +69,7 @@ class ProjectViewTest(TestCase):
         test_milestone = Milestone.objects.get(name='milestone_test')
         self.assertEquals(test_milestone.project.id, 1)
 
-        test_url = '/project/milestone/update/1'
+        test_url = '/project/milestone/1/update'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         new_name = 'test1 milestone updated'
@@ -77,7 +77,7 @@ class ProjectViewTest(TestCase):
         test_milestone = Milestone.objects.get(pk=1)
         self.assertEquals(test_milestone.name, new_name)
 
-        test_url = '/project/milestone/delete/1'
+        test_url = '/project/milestone/1/delete'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url)
@@ -86,7 +86,7 @@ class ProjectViewTest(TestCase):
 
     def test_version_create_update_delete(self):
         self.client.login(username='test_user', password='some password')
-        test_url = '/project/detail/1/add_version'
+        test_url = '/project/1/add_version'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url, {'name': 'version_test'})
@@ -94,7 +94,7 @@ class ProjectViewTest(TestCase):
         test_version = Version.objects.get(name='version_test')
         self.assertEquals(test_version.project.id, 1)
 
-        test_url = '/project/version/update/1'
+        test_url = '/project/version/1/update'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         new_name = 'test1 version updated'
@@ -102,9 +102,27 @@ class ProjectViewTest(TestCase):
         test_version = Version.objects.get(pk=1)
         self.assertEquals(test_version.name, new_name)
 
-        test_url = '/project/version/delete/1'
+        test_url = '/project/version/1/delete'
         response = self.client.get(test_url)
         self.assertEquals(response.status_code, 200)
         response = self.client.post(test_url)
         with self.assertRaises(Version.DoesNotExist):
             Version.objects.get(pk=1)
+
+    def test_project_member_add_remove(self):
+        test2_user = User.objects.create_user('test2', 'some password2')
+        self.client.login(username='test_user', password='some password')   
+        test_url = '/project/1/add-member'
+        response = self.client.get(test_url)
+        self.assertEquals(response.status_code, 200)
+        response = self.client.post(test_url, {'username': 'test2'})
+        self.assertEquals(response.status_code, 302)
+        test_member = User.objects.get(member_of_projects=1, pk=test2_user.id)
+        self.assertEquals(test_member, test2_user)
+
+        test_url = '/project/1/remove-member/%d' % test2_user.id
+        response = self.client.get(test_url)
+        self.assertEquals(response.status_code, 200)
+        response = self.client.post(test_url)
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.filter(member_of_projects=1).get(username=test2_user.username)

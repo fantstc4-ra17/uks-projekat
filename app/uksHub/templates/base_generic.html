@@ -8,7 +8,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         {% block title %}
         <title>UKS Hub</title>
         {% endblock %}
@@ -23,31 +23,31 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- center -->
-                <ul class="navbar-nav justify-content-center mx-auto">
-                    <li class="nav-item active">
+                <ul class="navbar-nav justify-content-sm-center mx-auto">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Projects</a>
+                        <a class="nav-link" href="{% url 'project:project_list' %}">Projects</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#">Issues</a>
                     </li>
                 </ul>
                 <!-- right -->
-                <ul class="navbar-nav justify-content-end">
+                <ul class="navbar-nav justify-content-sm-end">
                     {% if request.user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="#">User: {{ user.username }}</a>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                         </li>
                     {% else %}
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'registration_register' %}">Register</a>
                         </li>
                     {% endif %}
@@ -55,7 +55,7 @@
             </div>
         </nav>
         <br>
-        <div class="container justify-content-center">
+        <div class="container justify-content-sm-center">
             <div class="">
                     {% block content %}
                 

@@ -1,17 +1,20 @@
 {% extends "base_generic.html" %}
 {% block content %}
-    <div class="d-table mx-auto justify-content-center">
-        <h1 class="p-2">Project details:</h2>
+    <div class="d-table mx-auto justify-content-sm-center">
+        <h1 class="p-2 text-center">Project details</h2>
         <div class="d-flex flex-row">
             <div class="d-flex flex-column">
                 <div class="">
                     <b>Name:</b> {{ project.name }}
                 </div>
-                <div class="">
+                <div>
+                    <b>Owner:</b> {{ project.owner }}
+                </div>
+                <div>
                     <b>Description:</b> {{ project.description }}
                 </div>
             </div>
-            <div class="d-flex flex-column px-4">
+            <div class="d-flex flex-column px-4 py-3">
                 <div class="btn-group btn-group" role="group">
                     <a href="{% url 'project:project_update' project.id %}" class="btn btn-warning" role="button">
                         Update
@@ -22,8 +25,24 @@
                 </div>
             </div>
         </div>
-
+        <div>
+            <b>Members:</b>
+            <div class="row bg-light p-2">
+                {% for member in project.members.all %}
+                <div class="col-6">
+                    <a href="{% url 'project:project_list' %}?username={{ member.username | urlencode }}">{{ member.username }}</a>
+                    <a href="{% url 'project:project_member_remove' project.id member.id %}" class="fa fa-times fa-lg" style="color:#d9534f; border-color: #d43f3a" role="button">
+                    </a>
+                </div>    
+                {% endfor %}
+            </div>
+        </div>
         <div class="d-flex p-1">
+            <div class="p-3">
+                <a href="{% url 'project:project_member_add' project.id %}" class="btn btn-success" role="button">
+                    Add member
+                </a>
+            </div>
             <div class = "p-3">
                 <a href="{% url 'project:milestone_add' project.id %}" class="btn btn-success" role="button">
                     Add milestone
