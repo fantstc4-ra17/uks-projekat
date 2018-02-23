@@ -1,4 +1,4 @@
 {% extends "base_generic.html" %}
 {% block content %}
-{% include "project/bases/delete_base.html" %}
+    {% include "project/bases/delete_base.html" with object=deleting_user %}
 {% endblock %}
