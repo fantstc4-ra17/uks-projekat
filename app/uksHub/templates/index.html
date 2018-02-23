@@ -1,10 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<div class="d-table mx-auto justify-content-center">
+<div class="d-table mx-auto justify-content-sm-center">
     <h1 class="p-2">Home</h1>
         {% if user.is_authenticated %}
-            <h2>My recent projects:</h2>
+            <h2>My recent projects</h2>
             <a href="{% url 'project:project_start' %}" class="btn btn-success m-2">Start a new project</a>
             <div>
                 {% for project in object_list %}
